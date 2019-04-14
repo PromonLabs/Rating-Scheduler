@@ -7,15 +7,15 @@ import java.util.Date;
 @Component
 public class UpdateSubscriberStatus
 {
-    private Integer subscriberId;
+    private Long subscriberId;
     private String orderStatus;
     private Date modifiedDate;
 
-    public int getSubscriberId() {
+    public Long getSubscriberId() {
         return subscriberId;
     }
 
-    public void setSubscriberId(int subscriberId) {
+    public void setSubscriberId(Long subscriberId) {
         this.subscriberId = subscriberId;
     }
 

@@ -15,7 +15,7 @@ public class UpdateSubscriberStatusTableController
     @Autowired
     private UpdateSubscriberStatusRepo updateSubscriberStatusRepo;
 
-    @RequestMapping(value = "/update-subscriber-status", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/update-subscriber-status", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<UpdateSubscriberStatus> UpdateSubscriberStatus(@RequestBody UpdateSubscriberStatus updateSubscriberStatus)
     {
         return null;
