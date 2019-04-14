@@ -1,18 +1,21 @@
 package gl.telepost.micro.ratingscheduler.db.models;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 
-public class SubscriberStatus
+@Component
+public class SubscriberStatusRequest
 {
-    private int subscriberId;
+    private Long subscriberId;
     private String orderStatus;
     private Date modifiedDate;
 
-    public int getSubscriberId() {
+    public Long getSubscriberId() {
         return subscriberId;
     }
 
-    public void setSubscriberId(int subscriberId) {
+    public void setSubscriberId(Long subscriberId) {
         this.subscriberId = subscriberId;
     }
 

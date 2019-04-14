@@ -2,7 +2,7 @@ package gl.telepost.micro.ratingscheduler.db.models;
 
 import java.util.Date;
 
-public class SubscriberRating
+public class SubscriberStatusResponse
 {
     private Long subscriberId;
     private String orderStatus;

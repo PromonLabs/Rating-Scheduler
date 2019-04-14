@@ -1,10 +1,14 @@
 package gl.telepost.micro.ratingscheduler.services;
 
+import gl.telepost.micro.ratingscheduler.Enums.OrderStatusSuspendedSubscriberEnum;
 import gl.telepost.micro.ratingscheduler.client.RatingSchedulerClient;
-import gl.telepost.micro.ratingscheduler.db.models.FindSubscriberWithFilterResponseType;
+import gl.telepost.micro.ratingscheduler.client.RetrieveSubscriberClient;
+import gl.telepost.micro.ratingscheduler.db.models.*;
 import gl.telepost.micro.ratingscheduler.utils.PaginationType;
+import gl.telepost.micro.ratingscheduler.utils.ServiceType;
 import gl.telepost.micro.ratingscheduler.utils.ShedulerConfig;
 import gl.telepost.micro.ratingscheduler.utils.SubscriberStatusType;
+import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +45,7 @@ public class RatingSchedulerProcesser
 
         List<SubscriberStatusType> subscriberStatusTypeList = response.getSubscriberStatus();
 
-        while (subscriberStatusTypeList.isEmpty() && result.getTotalCount() == null && numberAttemptsIndex <= numberAttempts) {
+        while (subscriberStatusTypeList.isEmpty() && response.getTotalCount() == null && numberAttemptsIndex <= numberAttempts) {
 
 //            LOG.info("Attempt number " + numberAttemptsIndex + " out of " + numberAttempts
 //                    + " :Unable to retrieve SuspendedS2 subscribers. Trying again in " + retryFetchS2SubscribersDelay + " minutes");
@@ -84,8 +88,94 @@ public class RatingSchedulerProcesser
     {
         for (SubscriberStatusType subscriberStatusType : subscriberStatusTypeList)
         {
-            Integer subscriberId = Integer.valueOf(subscriberStatusType.getServiceId());
+            Long subscriberId = Long.valueOf(subscriberStatusType.getServiceId());
+            DatabaseAccess da = new DatabaseAccess();
+            SubscriberStatusResponse subscriberStatusResponse = da.getSubscriberRecord(subscriberId);
 
+            boolean isOrderRequired = false;
+            SubscriberCommandObject subscriberCommandObject = null;
+
+            if (subscriberStatusResponse.getSubscriberId() == null)
+            {
+                ServiceType serviceType = fetchSubscriberDetails(subscriberStatusType.getServiceId());
+                //need to implement this
+//                subscriberCommandObject = subscriberCommandObject = validateSubscriberDetails(serviceType);
+
+                if (!subscriberCommandObject.isS2())
+                {
+                    continue;
+                }
+
+                if (!subscriberCommandObject.isInfoValid())
+                {
+//                    LOG.debug("Error fetching subscribers details to generate order");
+                    da.createSubscriberRecord(subscriberId,
+                            OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_SUSPENDEDS2_FETCH_ORDER_INFO_FAILED.getOrderStatus());
+                    continue;
+                }
+                if (subscriberCommandObject.isImsiFoundInHLR())
+                {
+                    da.createSubscriberRecord(subscriberId,
+                            OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_WAITING_CALLBACK.getOrderStatus());
+                    isOrderRequired = true;
+                }
+                else
+                 {
+                    da.createSubscriberRecord(subscriberId,
+                            OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_SUSPENDEDS2_COMPLETE.getOrderStatus());
+                    continue;
+                }
+            }
+            else if (subscriberStatusResponse.getOrderStatus().equals(
+                    OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_SUSPENDEDS2_FETCH_ORDER_INFO_FAILED.getOrderStatus())) {
+
+                ServiceType serviceType = fetchSubscriberDetails(subscriberStatusType.getServiceId());
+//                subscriberCommandObject = validateSubscriberDetails(serviceType);
+
+                if (!subscriberCommandObject.isS2()) {
+                    continue;
+                }
+
+                if (!subscriberCommandObject.isInfoValid()) {
+//                    LOG.debug("Error fetching subscribers details to generate order");
+                    da.updateSubscriberRecord(subscriberId,
+                            OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_SUSPENDEDS2_FETCH_ORDER_INFO_FAILED.getOrderStatus());
+                    continue;
+                }
+
+                if (subscriberCommandObject.isImsiFoundInHLR()) {
+                    da.updateSubscriberRecord(subscriberId,
+                            OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_WAITING_CALLBACK.getOrderStatus());
+                    isOrderRequired = true;
+                }
+                else {
+                    da.updateSubscriberRecord(subscriberId,
+                            OrderStatusSuspendedSubscriberEnum.ORDER_STATUS_SUSPENDEDS2_COMPLETE.getOrderStatus());
+                    continue;
+                }
+            }
+//            if (isOrderRequired) {
+//                isOrderRequired = false;
+//                CreateTerminateSuspendedS2SubscriberOrder orderTerminateS2 = new CreateTerminateSuspendedS2SubscriberOrder(null);
+//                orderTerminateS2.execute(subscriberCommandObject);
+//            }
+        }
+    }
+
+    /**
+     *
+     * Wrapper to GetServiceInformationv3 to catch and handle network connectivity exceptions
+     *
+     */
+    protected ServiceType fetchSubscriberDetails(String serviceId) {
+        ServiceType serviceType = new ServiceType();
+        serviceType.setServiceId(serviceId);
+        RetrieveSubscriberClient subscriberInformationClient = new RetrieveSubscriberClient(serviceType);
+        try {
+            return subscriberInformationClient.getService();
+        }
+        catch (RestClientException e) {
+            return null;
         }
     }
 }

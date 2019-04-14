@@ -18,6 +18,6 @@ public class UpdateSubscriberStatusTableController
     @RequestMapping(value = "/update-subscriber-status", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<UpdateSubscriberStatus> UpdateSubscriberStatus(@RequestBody UpdateSubscriberStatus updateSubscriberStatus)
     {
-
+        return null;
     }
 }
