@@ -5,42 +5,39 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class UpdateSubscriberStatus
-{
-    private Long subscriberId;
-    private String orderStatus;
-    private Date modifiedDate;
+public class UpdateSubscriberStatus {
+	private Long subscriberId;
+	private String orderStatus;
+	private Date modifiedDate;
 
-    public Long getSubscriberId() {
-        return subscriberId;
-    }
+	public Long getSubscriberId() {
+		return subscriberId;
+	}
 
-    public void setSubscriberId(Long subscriberId) {
-        this.subscriberId = subscriberId;
-    }
+	public void setSubscriberId(Long subscriberId) {
+		this.subscriberId = subscriberId;
+	}
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
+	public String getOrderStatus() {
+		return orderStatus;
+	}
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
 
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
 
-    @Override
-    public String toString() {
-        return "UpdateSubscriberStatus{" +
-                "subscriberId=" + subscriberId +
-                ", orderStatus='" + orderStatus + '\'' +
-                ", modifiedDate=" + modifiedDate +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "UpdateSubscriberStatus{" + "subscriberId=" + subscriberId
+				+ ", orderStatus='" + orderStatus + '\'' + ", modifiedDate="
+				+ modifiedDate + '}';
+	}
 }

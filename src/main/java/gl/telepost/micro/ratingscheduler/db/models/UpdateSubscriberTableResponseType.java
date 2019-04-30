@@ -1,9 +1,10 @@
 package gl.telepost.micro.ratingscheduler.db.models;
 
-import gl.telepost.micro.ratingscheduler.utils.StatusType;
+import org.springframework.stereotype.Component;
 
-public class UpdateSubscriberStatusResponse {
-	protected StatusType status;
+@Component
+public class UpdateSubscriberTableResponseType {
+	private StatusType status;
 
 	public StatusType getStatus() {
 		return status;

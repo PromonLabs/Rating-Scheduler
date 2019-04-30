@@ -1,4 +1,4 @@
-package gl.telepost.micro.ratingscheduler.utils;
+package gl.telepost.micro.ratingscheduler.db.models;
 
 public class StatusType {
 	private int statusCode;
