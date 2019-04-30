@@ -1,8 +1,12 @@
 package gl.telepost.micro.ratingscheduler.db.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
-public class SubscriberStatusResponse {
+@Entity
+public class SubscriberStatus {
+	@Id
 	private Integer subscriberId;
 	private String orderStatus;
 	private Date modifiedDate;

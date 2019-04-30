@@ -4,7 +4,7 @@ import gl.telepost.micro.ratingscheduler.db.models.FindSubscriberWithFilterReque
 import gl.telepost.micro.ratingscheduler.db.models.FindSubscriberWithFilterResponseType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FindSubscriberWithFilterResponseTypeRepo extends JpaRepository
-{
-    FindSubscriberWithFilterResponseType findSubscriberWithFilter(FindSubscriberWithFilterRequestType request);
+public interface FindSubscriberWithFilterResponseTypeRepo extends JpaRepository {
+	FindSubscriberWithFilterResponseType findSubscriberWithFilter(
+			FindSubscriberWithFilterRequestType request);
 }
